@@ -4,8 +4,13 @@ dotenv.config();
 
 export const env = {
   PORT: process.env.PORT || "5000",
-  NODE_ENV: process.env.NODE_ENV || "development",
-  MONGODB_URI: process.env.MONGODB_URI || "",
-  JWT_SECRET: process.env.JWT_SECRET || "",
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
+
+  MONGODB_URI: process.env.MONGODB_URI!,
+
+  JWT_SECRET: process.env.JWT_SECRET!,
+
+  GROQ_API_KEY: process.env.GROQ_API_KEY!,
+
+  GROQ_MODEL:
+    process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
 };
