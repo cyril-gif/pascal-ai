@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ChatController } from "../controllers/chat.controller";
 import { protect } from "../middleware/auth.middleware";
+import { upload } from "../middleware/upload.middleware";
 
 const router = Router();
 const controller = new ChatController();
@@ -38,6 +39,13 @@ router.get(
 router.post(
   "/:conversationId/message",
   protect,
+  controller.sendMessage
+);
+
+router.post(
+  "/:conversationId/message",
+  protect,
+  upload.single("file"),
   controller.sendMessage
 );
 
