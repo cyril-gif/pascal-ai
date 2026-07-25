@@ -112,7 +112,7 @@ export default function Sidebar() {
   }, [conversations, search]);
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-[#171717]">
+    <aside className="flex h-full w-full flex-col bg-[#171717]">
       {/* Header: close sidebar + new chat */}
       <div className="flex items-center justify-between px-3 pb-2 pt-4">
         <button
