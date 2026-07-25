@@ -95,6 +95,10 @@ export default function ChatInput() {
         conversation = newConversation;
       }
 
+      if (!conversation) {
+        throw new Error("Failed to create or find conversation");
+      }
+
       const prompt = message.trim();
       const fileToSend = selectedFile;
 
