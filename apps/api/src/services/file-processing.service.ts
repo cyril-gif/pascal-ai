@@ -1,6 +1,6 @@
 // services/file-processing.service.ts
 import cloudinary from "../config/cloudinary";
-import pdfParse from "pdf-parse";
+const pdfParse = require("pdf-parse");
 import mammoth from "mammoth";
 
 export interface ProcessedAttachment {

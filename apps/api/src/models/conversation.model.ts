@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IConversation extends Document {
   title: string;
   user: mongoose.Types.ObjectId;
-  model: string;
+  aiModel: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,9 +21,9 @@ const ConversationSchema = new Schema<IConversation>(
       required: true,
     },
 
-    model: {
+    aiModel: {
       type: String,
-      default: "gpt-4.1-mini",
+      default: "llama-3.3-70b-versatile",
     },
   },
   {
