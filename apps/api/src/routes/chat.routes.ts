@@ -7,66 +7,60 @@ const router = Router();
 const controller = new ChatController();
 
 /**
- * @route   POST /api/v1/chat/new
+ * @route   POST /api/v1/chat/conversations
  * @desc    Create a new conversation
  * @access  Private
  */
-router.post("/new", protect, controller.createConversation);
+router.post("/conversations", protect, controller.createConversation);
 
 /**
- * @route   GET /api/v1/chat
+ * @route   GET /api/v1/chat/conversations
  * @desc    Get all conversations for the logged-in user
  * @access  Private
  */
-router.get("/", protect, controller.getConversations);
+router.get("/conversations", protect, controller.getConversations);
 
 /**
- * @route   GET /api/v1/chat/:conversationId/messages
+ * @route   GET /api/v1/chat/conversations/:conversationId/messages
  * @desc    Get all messages in a conversation
  * @access  Private
  */
 router.get(
-  "/:conversationId/messages",
+  "/conversations/:conversationId/messages",
   protect,
   controller.getMessages
 );
 
 /**
- * @route   POST /api/v1/chat/:conversationId/message
- * @desc    Send a message to Pascal AI
+ * @route   POST /api/v1/chat/conversations/:conversationId/messages
+ * @desc    Send a message to Pascal AI (supports optional file/image attachment)
  * @access  Private
  */
 router.post(
-  "/:conversationId/message",
-  protect,
-  controller.sendMessage
-);
-
-router.post(
-  "/:conversationId/message",
+  "/conversations/:conversationId/messages",
   protect,
   upload.single("file"),
   controller.sendMessage
 );
 
 /**
- * @route   PATCH /api/v1/chat/:conversationId
+ * @route   PATCH /api/v1/chat/conversations/:conversationId
  * @desc    Rename a conversation
  * @access  Private
  */
 router.patch(
-  "/:conversationId",
+  "/conversations/:conversationId",
   protect,
   controller.renameConversation
 );
 
 /**
- * @route   DELETE /api/v1/chat/:conversationId
+ * @route   DELETE /api/v1/chat/conversations/:conversationId
  * @desc    Delete a conversation
  * @access  Private
  */
 router.delete(
-  "/:conversationId",
+  "/conversations/:conversationId",
   protect,
   controller.deleteConversation
 );

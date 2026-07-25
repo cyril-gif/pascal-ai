@@ -4,3 +4,18 @@
 node_modules/
 .next/
 dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+*.log
+
+# Build artifacts
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
