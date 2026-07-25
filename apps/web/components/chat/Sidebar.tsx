@@ -2,12 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  Bot,
-  Plus,
+  PenSquare,
   Search,
   Settings,
   LogOut,
-  Crown,
+  Sparkles,
 } from "lucide-react";
 
 import ConversationItem from "./ConversationItem";
@@ -42,20 +41,10 @@ export default function Sidebar() {
   async function fetchConversations() {
     try {
       setLoading(true);
-
       const conversations = await chatService.getConversations();
+      setConversations(conversations);
 
-console.log(
-  "Sidebar conversations:",
-  conversations
-);
-
-setConversations(conversations);
-
-      if (
-        conversations.length > 0 &&
-        !activeConversation
-      ) {
+      if (conversations.length > 0 && !activeConversation) {
         openConversation(conversations[0]);
       }
     } catch (err) {
@@ -65,19 +54,12 @@ setConversations(conversations);
     }
   }
 
-  async function openConversation(
-    conversation: any
-  ) {
+  async function openConversation(conversation: any) {
     try {
       setLoading(true);
-
       setActiveConversation(conversation);
 
-      const messages =
-        await chatService.getMessages(
-          conversation._id
-        );
-
+      const messages = await chatService.getMessages(conversation._id);
       setMessages(messages);
     } catch (err) {
       console.error(err);
@@ -88,55 +70,33 @@ setConversations(conversations);
 
   async function createConversation() {
     try {
-      const conversation =
-        await chatService.createConversation(
-          "New Chat"
-        );
-
+      const conversation = await chatService.createConversation("New Chat");
       addConversation(conversation);
-
       setActiveConversation(conversation);
-
       clearMessages();
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function renameConversation(
-    id: string
-  ) {
-    const title = prompt(
-      "Rename conversation"
-    );
-
+  async function renameConversation(id: string) {
+    const title = prompt("Rename conversation");
     if (!title) return;
 
     try {
-      const updated =
-        await chatService.renameConversation(
-          id,
-          title
-        );
-
+      const updated = await chatService.renameConversation(id, title);
       updateConversation(updated);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function deleteConversation(
-    id: string
-  ) {
-    const ok = confirm(
-      "Delete this conversation?"
-    );
-
+  async function deleteConversation(id: string) {
+    const ok = confirm("Delete this conversation?");
     if (!ok) return;
 
     try {
       await chatService.deleteConversation(id);
-
       removeConversation(id);
     } catch (err) {
       console.error(err);
@@ -145,152 +105,91 @@ setConversations(conversations);
 
   const filtered = useMemo(() => {
     return (conversations ?? []).filter((c) =>
-      c.title
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      c.title.toLowerCase().includes(search.toLowerCase())
     );
   }, [conversations, search]);
 
   return (
-    <aside className="flex h-screen w-80 flex-col border-r border-slate-800 bg-slate-950">
-
-      {/* Logo */}
-
-      <div className="border-b border-slate-800 p-5">
-
-        <div className="flex items-center gap-3">
-
-          <div className="rounded-xl bg-blue-600 p-2">
-            <Bot className="text-white" />
-          </div>
-
-          <div>
-            <h1 className="text-xl font-bold text-white">
-              Pascal AI
-            </h1>
-
-            <p className="text-xs text-slate-400">
-              AI Assistant
-            </p>
-          </div>
-
+    <aside className="flex h-screen w-64 flex-col bg-[#171717]">
+      {/* Logo + New Chat */}
+      <div className="flex items-center justify-between px-3 pb-2 pt-4">
+        <div className="flex items-center gap-2 px-1">
+          <Sparkles size={18} className="text-slate-300" />
+          <span className="text-sm font-medium text-slate-200">Pascal AI</span>
         </div>
-
-      </div>
-
-      {/* New Chat */}
-
-      <div className="p-4">
 
         <button
           onClick={createConversation}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-medium text-white transition hover:bg-blue-700"
+          title="New chat"
+          className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-800 hover:text-white"
         >
-          <Plus size={18} />
-
-          New Chat
+          <PenSquare size={17} />
         </button>
-
       </div>
 
       {/* Search */}
-
-      <div className="px-4 pb-4">
-
-        <div className="flex items-center rounded-xl border border-slate-700 bg-slate-900 px-3">
-
-          <Search
-            size={18}
-            className="text-slate-500"
-          />
-
+      <div className="px-3 pb-3">
+        <div className="flex items-center gap-2 rounded-lg bg-slate-900/60 px-3 py-1.5">
+          <Search size={14} className="shrink-0 text-slate-500" />
           <input
             type="text"
             value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            placeholder="Search chats..."
-            className="w-full bg-transparent px-3 py-3 text-white outline-none placeholder:text-slate-500"
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search chats"
+            className="w-full bg-transparent py-1 text-[13px] text-slate-200 outline-none placeholder:text-slate-500"
           />
-
         </div>
-
       </div>
 
       {/* Conversations */}
-
-      <div className="flex-1 overflow-y-auto px-3">
-
+      <div className="flex-1 overflow-y-auto px-2">
         {loading ? (
-
-          <div className="mt-10 text-center text-slate-500">
+          <div className="mt-8 text-center text-xs text-slate-500">
             Loading...
           </div>
-
         ) : filtered.length === 0 ? (
-
-          <div className="mt-10 text-center text-slate-500">
+          <div className="mt-8 text-center text-xs text-slate-500">
             No conversations yet
           </div>
-
         ) : (
-
-          filtered.map((conversation) => (
-
-            <ConversationItem
-              key={conversation._id}
-              id={conversation._id}
-              title={conversation.title}
-              updated={
-                conversation.updatedAt
-                  ? new Date(
-                      conversation.updatedAt
-                    ).toLocaleString()
-                  : ""
-              }
-              active={
-                activeConversation?._id ===
-                conversation._id
-              }
-              onClick={() =>
-                openConversation(conversation)
-              }
-              onRename={
-                renameConversation
-              }
-              onDelete={
-                deleteConversation
-              }
-            />
-
-          ))
-
+          <div className="space-y-0.5">
+            {filtered.map((conversation) => (
+              <ConversationItem
+                key={conversation._id}
+                id={conversation._id}
+                title={conversation.title}
+                updated={
+                  conversation.updatedAt
+                    ? new Date(conversation.updatedAt).toLocaleString()
+                    : ""
+                }
+                active={activeConversation?._id === conversation._id}
+                onClick={() => openConversation(conversation)}
+                onRename={renameConversation}
+                onDelete={deleteConversation}
+              />
+            ))}
+          </div>
         )}
-
       </div>
 
       {/* Footer */}
-
-      <div className="border-t border-slate-800 p-4">
-
-        <button className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900">
-          <Crown size={18} />
-          Upgrade
+      <div className="space-y-0.5 border-t border-slate-800/70 p-2">
+        <button className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-300 transition hover:bg-slate-800">
+          <Sparkles size={15} />
+          Upgrade plan
         </button>
 
-        <button className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900">
-          <Settings size={18} />
+        <button className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-300 transition hover:bg-slate-800">
+          <Settings size={15} />
           Settings
         </button>
 
-        <button className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-red-400 transition hover:bg-red-500/10">
-          <LogOut size={18} />
-          Logout
+        <button className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-red-400 transition hover:bg-red-500/10">
+          <LogOut size={15} />
+          Log out
         </button>
-
       </div>
-
     </aside>
   );
 }
