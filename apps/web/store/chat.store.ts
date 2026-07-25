@@ -27,244 +27,152 @@ interface ChatStore {
 
   stopGeneration: boolean;
 
+  sidebarOpen: boolean;
+
   /* ---------------- Conversation ---------------- */
 
-  setConversations: (
-    conversations: Conversation[]
-  ) => void;
-
-  addConversation: (
-    conversation: Conversation
-  ) => void;
-
-  updateConversation: (
-    conversation: Conversation
-  ) => void;
-
-  removeConversation: (
-    conversationId: string
-  ) => void;
-
-  setActiveConversation: (
-    conversation: Conversation | null
-  ) => void;
+  setConversations: (conversations: Conversation[]) => void;
+  addConversation: (conversation: Conversation) => void;
+  updateConversation: (conversation: Conversation) => void;
+  removeConversation: (conversationId: string) => void;
+  setActiveConversation: (conversation: Conversation | null) => void;
 
   /* ---------------- Messages ---------------- */
 
-  setMessages: (
-    messages: Message[]
-  ) => void;
-
-  addMessage: (
-    message: Message
-  ) => void;
-
-  updateLastAssistantMessage: (
-    content: string
-  ) => void;
-
+  setMessages: (messages: Message[]) => void;
+  addMessage: (message: Message) => void;
+  updateLastAssistantMessage: (content: string) => void;
   removeLastAssistantMessage: () => void;
-
   clearMessages: () => void;
 
   /* ---------------- UI ---------------- */
 
-  setLoading: (
-    loading: boolean
-  ) => void;
-
-  setTyping: (
-    typing: boolean
-  ) => void;
-
-  setStopGeneration: (
-    stop: boolean
-  ) => void;
+  setLoading: (loading: boolean) => void;
+  setTyping: (typing: boolean) => void;
+  setStopGeneration: (stop: boolean) => void;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
 
   /* ---------------- Utilities ---------------- */
 
   reset: () => void;
 }
 
-export const useChatStore =
-  create<ChatStore>((set) => ({
-    /* ================= STATE ================= */
+export const useChatStore = create<ChatStore>((set) => ({
+  /* ================= STATE ================= */
 
-    conversations: [],
+  conversations: [],
+  activeConversation: null,
+  messages: [],
 
-    activeConversation: null,
+  loading: false,
+  typing: false,
+  stopGeneration: false,
+  sidebarOpen: true,
 
-    messages: [],
+  /* ================= CONVERSATIONS ================= */
 
-    loading: false,
+  setConversations: (conversations) =>
+    set({
+      conversations: Array.isArray(conversations) ? conversations : [],
+    }),
 
-    typing: false,
+  addConversation: (conversation) =>
+    set((state) => ({
+      conversations: [
+        conversation,
+        ...(Array.isArray(state.conversations) ? state.conversations : []),
+      ],
+    })),
 
-    stopGeneration: false,
+  updateConversation: (conversation) =>
+    set((state) => ({
+      conversations: state.conversations.map((c) =>
+        c._id === conversation._id ? conversation : c
+      ),
+      activeConversation:
+        state.activeConversation?._id === conversation._id
+          ? conversation
+          : state.activeConversation,
+    })),
 
-    /* ================= CONVERSATIONS ================= */
+  removeConversation: (conversationId) =>
+    set((state) => ({
+      conversations: state.conversations.filter(
+        (c) => c._id !== conversationId
+      ),
+      activeConversation:
+        state.activeConversation?._id === conversationId
+          ? null
+          : state.activeConversation,
+      messages:
+        state.activeConversation?._id === conversationId
+          ? []
+          : state.messages,
+    })),
 
-    setConversations: (conversations) =>
-      set({
-        conversations: Array.isArray(conversations)
-          ? conversations
-          : [],
-      }),
+  setActiveConversation: (activeConversation) => set({ activeConversation }),
 
-    addConversation: (conversation) =>
-      set((state) => ({
-        conversations: [
-          conversation,
-          ...(Array.isArray(state.conversations)
-            ? state.conversations
-            : []),
-        ],
-      })),
+  /* ================= MESSAGES ================= */
 
-    updateConversation: (conversation) =>
-      set((state) => ({
-        conversations: state.conversations.map((c) =>
-          c._id === conversation._id
-            ? conversation
-            : c
-        ),
+  setMessages: (messages) =>
+    set({
+      messages: Array.isArray(messages) ? messages : [],
+    }),
 
-        activeConversation:
-          state.activeConversation?._id ===
-          conversation._id
-            ? conversation
-            : state.activeConversation,
-      })),
+  addMessage: (message) =>
+    set((state) => ({
+      messages: [...state.messages, message],
+    })),
 
-    removeConversation: (conversationId) =>
-      set((state) => ({
-        conversations:
-          state.conversations.filter(
-            (c) => c._id !== conversationId
-          ),
+  updateLastAssistantMessage: (content) =>
+    set((state) => {
+      const messages = [...state.messages];
 
-        activeConversation:
-          state.activeConversation?._id ===
-          conversationId
-            ? null
-            : state.activeConversation,
-
-        messages:
-          state.activeConversation?._id ===
-          conversationId
-            ? []
-            : state.messages,
-      })),
-
-    setActiveConversation: (
-      activeConversation
-    ) =>
-      set({
-        activeConversation,
-      }),
-
-    /* ================= MESSAGES ================= */
-
-    setMessages: (messages) =>
-      set({
-        messages: Array.isArray(messages)
-          ? messages
-          : [],
-      }),
-
-    addMessage: (message) =>
-      set((state) => ({
-        messages: [
-          ...state.messages,
-          message,
-        ],
-      })),
-
-    updateLastAssistantMessage: (
-      content
-    ) =>
-      set((state) => {
-        const messages = [...state.messages];
-
-        for (
-          let i = messages.length - 1;
-          i >= 0;
-          i--
-        ) {
-          if (
-            messages[i].role ===
-            "assistant"
-          ) {
-            messages[i] = {
-              ...messages[i],
-              content,
-            };
-
-            break;
-          }
+      for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].role === "assistant") {
+          messages[i] = { ...messages[i], content };
+          break;
         }
+      }
 
-        return {
-          messages,
-        };
-      }),
+      return { messages };
+    }),
 
-    removeLastAssistantMessage: () =>
-      set((state) => {
-        const messages = [...state.messages];
+  removeLastAssistantMessage: () =>
+    set((state) => {
+      const messages = [...state.messages];
 
-        for (
-          let i = messages.length - 1;
-          i >= 0;
-          i--
-        ) {
-          if (
-            messages[i].role ===
-            "assistant"
-          ) {
-            messages.splice(i, 1);
-            break;
-          }
+      for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].role === "assistant") {
+          messages.splice(i, 1);
+          break;
         }
+      }
 
-        return {
-          messages,
-        };
-      }),
+      return { messages };
+    }),
 
-    clearMessages: () =>
-      set({
-        messages: [],
-      }),
+  clearMessages: () => set({ messages: [] }),
 
-    /* ================= UI ================= */
+  /* ================= UI ================= */
 
-    setLoading: (loading) =>
-      set({
-        loading,
-      }),
+  setLoading: (loading) => set({ loading }),
+  setTyping: (typing) => set({ typing }),
+  setStopGeneration: (stopGeneration) => set({ stopGeneration }),
+  setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
+  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
-    setTyping: (typing) =>
-      set({
-        typing,
-      }),
+  /* ================= RESET ================= */
 
-    setStopGeneration: (
-      stopGeneration
-    ) =>
-      set({
-        stopGeneration,
-      }),
-
-    /* ================= RESET ================= */
-
-    reset: () =>
-      set({
-        conversations: [],
-        activeConversation: null,
-        messages: [],
-        loading: false,
-        typing: false,
-        stopGeneration: false,
-      }),
-  }));
+  reset: () =>
+    set({
+      conversations: [],
+      activeConversation: null,
+      messages: [],
+      loading: false,
+      typing: false,
+      stopGeneration: false,
+      sidebarOpen: true,
+    }),
+}));
