@@ -28,4 +28,8 @@ export const env = {
 
   FRONTEND_URL: process.env.FRONTEND_URL,
    OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
+  
+   VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY!,
+VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY!,
+VAPID_SUBJECT: process.env.VAPID_SUBJECT || "mailto:cyrillantam@gmail.com",
 };

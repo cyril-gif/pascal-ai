@@ -65,6 +65,31 @@ export const viewport: Viewport = {
   themeColor: "#0f172a",
 };
 
+function AppleSplashScreens() {
+  return (
+    <>
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent"
+      />
+      <meta name="apple-mobile-web-app-title" content="Pascal AI" />
+      <link rel="apple-touch-icon" href="/icon-192.png" />
+      {/* iPhone splash - most common modern sizes */}
+      <link
+        rel="apple-touch-startup-image"
+        media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"
+        href="/icon-512.png"
+      />
+      <link
+        rel="apple-touch-startup-image"
+        media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)"
+        href="/icon-512.png"
+      />
+    </>
+  );
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -76,6 +101,9 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
+      <head>
+        <AppleSplashScreens />
+      </head>
       <body className="min-h-screen bg-slate-950 text-white antialiased">
         <PWARegister />
         <PWAInstall />

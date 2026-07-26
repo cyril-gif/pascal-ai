@@ -1,5 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export interface IPushSubscription {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+}
+
 export interface IUser extends Document {
   firstName: string;
   lastName: string;
@@ -10,6 +18,7 @@ export interface IUser extends Document {
   role: "user" | "admin";
   subscription: "free" | "pro" | "business";
   isVerified: boolean;
+  pushSubscriptions: IPushSubscription[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -71,6 +80,16 @@ const UserSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+
+    pushSubscriptions: [
+      {
+        endpoint: { type: String, required: true },
+        keys: {
+          p256dh: { type: String, required: true },
+          auth: { type: String, required: true },
+        },
+      },
+    ],
   },
   {
     timestamps: true,

@@ -9,6 +9,7 @@ import {
   Save,
   ChevronRight,
 } from "lucide-react";
+import NotificationToggle from "@/components/NotificationToggle";
 
 type SettingsTab = "profile" | "billing" | "danger";
 
@@ -38,6 +39,7 @@ export default function SettingsPage() {
 
   function handleLogout() {
     localStorage.removeItem("token");
+    document.cookie = "token=; path=/; max-age=0";
     window.location.href = "/login";
   }
 
@@ -135,6 +137,13 @@ export default function SettingsPage() {
                   <Save size={16} />
                   {saving ? "Saving..." : saved ? "Saved!" : "Save changes"}
                 </button>
+
+                <div className="mt-8 border-t border-slate-800 pt-6">
+                  <h3 className="mb-3 text-sm font-medium text-slate-300">
+                    Notifications
+                  </h3>
+                  <NotificationToggle />
+                </div>
               </div>
             )}
 

@@ -9,6 +9,7 @@ import imageRoutes from "./routes/image.routes";
 
 import authRoutes from "./models/auth/auth.routes";
 import chatRoutes from "./routes/chat.routes";
+import pushRoutes from "./routes/push.routes";
 
 const app: Application = express();
 
@@ -134,6 +135,7 @@ app.get("/api/v1/health", (req: Request, res: Response) => {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/chat", chatRoutes);
 app.use("/api/v1/images", imageRoutes);
+app.use("/api/v1/push", pushRoutes);
 /**
  * ====================================
  * 404 Handler
