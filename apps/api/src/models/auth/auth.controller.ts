@@ -7,12 +7,27 @@ import {
 
 const authService = new AuthService();
 
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+function setAuthCookie(res: Response, token: string) {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: COOKIE_MAX_AGE,
+  });
+}
+
 export class AuthController {
   async register(req: Request, res: Response) {
     try {
       const data = registerSchema.parse(req.body);
 
       const result = await authService.register(data);
+
+      setAuthCookie(res, result.token);
 
       return res.status(201).json({
         success: true,
@@ -35,6 +50,8 @@ export class AuthController {
         data.email,
         data.password
       );
+
+      setAuthCookie(res, result.token);
 
       return res.json({
         success: true,

@@ -17,45 +17,35 @@ export default function RegisterForm() {
     password: "",
   });
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [error, setError] =
-    useState("");
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
-      [e.target.name]:
-        e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
     setError("");
 
     try {
-      const response =
-        await registerUser(form);
+      const response = await registerUser(form);
 
-      setAuth(
-        response.data.user,
-        response.data.token
-      );
+      setAuth(response.data.user, response.data.token);
+
+      // Set a cookie on the frontend's own domain so proxy.ts can see it
+      document.cookie = `token=${response.data.token}; path=/; max-age=${
+        7 * 24 * 60 * 60
+      }; SameSite=Lax`;
 
       router.push("/chat");
     } catch (err: any) {
-      setError(
-        err.response?.data?.message ||
-          "Registration failed"
-      );
+      setError(err.response?.data?.message || "Registration failed");
     }
 
     setLoading(false);
@@ -63,7 +53,6 @@ export default function RegisterForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-950">
-
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8"
@@ -119,9 +108,7 @@ export default function RegisterForm() {
           disabled={loading}
           className="w-full rounded-lg bg-blue-600 p-3 text-white"
         >
-          {loading
-            ? "Creating Account..."
-            : "Register"}
+          {loading ? "Creating Account..." : "Register"}
         </button>
       </form>
     </div>

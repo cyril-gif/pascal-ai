@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   PenSquare,
   Search,
@@ -9,14 +10,13 @@ import {
   LogOut,
   Sparkles,
   PanelLeftClose,
+  ImageIcon,
 } from "lucide-react";
 
 import ConversationItem from "./ConversationItem";
 
 import chatService from "@/services/chat.service";
 import { useChatStore } from "@/store/chat.store";
-import Link from "next/link";
-import { ImageIcon } from "lucide-react";
 
 export default function Sidebar() {
   const [search, setSearch] = useState("");
@@ -24,6 +24,7 @@ export default function Sidebar() {
 
   function handleLogout() {
     localStorage.removeItem("token");
+    document.cookie = "token=; path=/; max-age=0";
     router.push("/login");
   }
 
@@ -188,35 +189,39 @@ export default function Sidebar() {
       </div>
 
       {/* Footer */}
-     {/* Footer */}
+      <div className="space-y-0.5 border-t border-slate-800/70 p-2">
+        <Link
+          href="/images"
+          className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-300 transition hover:bg-slate-800"
+        >
+          <ImageIcon size={15} />
+          AI Images
+        </Link>
 
-<div className="border-t border-slate-800 p-4">
+        <button
+          onClick={() => router.push("/settings/billing")}
+          className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-300 transition hover:bg-slate-800"
+        >
+          <Sparkles size={15} />
+          Upgrade plan
+        </button>
 
-  <button className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900">
-    <Crown size={18} />
-    Upgrade
-  </button>
+        <button
+          onClick={() => router.push("/settings")}
+          className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-300 transition hover:bg-slate-800"
+        >
+          <Settings size={15} />
+          Settings
+        </button>
 
-  <Link
-    href="/images"
-    className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900"
-  >
-    <ImageIcon size={18} />
-    AI Images
-  </Link>
-
-  <button className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900">
-    <Settings size={18} />
-    Settings
-  </button>
-
-  <button className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-red-400 transition hover:bg-red-500/10">
-    <LogOut size={18} />
-    Logout
-  </button>
-
-</div>
-     
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-red-400 transition hover:bg-red-500/10"
+        >
+          <LogOut size={15} />
+          Log out
+        </button>
+      </div>
     </aside>
   );
 }
