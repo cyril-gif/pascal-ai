@@ -27,4 +27,5 @@ export const env = {
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
 
   FRONTEND_URL: process.env.FRONTEND_URL,
+   OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
 };

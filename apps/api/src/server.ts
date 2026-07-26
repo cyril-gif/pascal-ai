@@ -20,6 +20,7 @@ const startServer = async () => {
     console.error(error);
     process.exit(1);
   }
+  console.log("OPENAI:", process.env.OPENAI_API_KEY);
 };
 
 startServer();

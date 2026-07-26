@@ -5,6 +5,7 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import imageRoutes from "./routes/image.routes";
 
 import authRoutes from "./models/auth/auth.routes";
 import chatRoutes from "./routes/chat.routes";
@@ -132,7 +133,7 @@ app.get("/api/v1/health", (req: Request, res: Response) => {
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/chat", chatRoutes);
-
+app.use("/api/v1/images", imageRoutes);
 /**
  * ====================================
  * 404 Handler

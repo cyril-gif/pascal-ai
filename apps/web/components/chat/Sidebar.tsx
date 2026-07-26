@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   PenSquare,
   Search,
@@ -14,9 +15,17 @@ import ConversationItem from "./ConversationItem";
 
 import chatService from "@/services/chat.service";
 import { useChatStore } from "@/store/chat.store";
+import Link from "next/link";
+import { ImageIcon } from "lucide-react";
 
 export default function Sidebar() {
   const [search, setSearch] = useState("");
+  const router = useRouter();
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    router.push("/login");
+  }
 
   const {
     conversations,
@@ -179,22 +188,35 @@ export default function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="space-y-0.5 border-t border-slate-800/70 p-2">
-        <button className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-300 transition hover:bg-slate-800">
-          <Sparkles size={15} />
-          Upgrade plan
-        </button>
+     {/* Footer */}
 
-        <button className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-300 transition hover:bg-slate-800">
-          <Settings size={15} />
-          Settings
-        </button>
+<div className="border-t border-slate-800 p-4">
 
-        <button className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-red-400 transition hover:bg-red-500/10">
-          <LogOut size={15} />
-          Log out
-        </button>
-      </div>
+  <button className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900">
+    <Crown size={18} />
+    Upgrade
+  </button>
+
+  <Link
+    href="/images"
+    className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900"
+  >
+    <ImageIcon size={18} />
+    AI Images
+  </Link>
+
+  <button className="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-slate-900">
+    <Settings size={18} />
+    Settings
+  </button>
+
+  <button className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-red-400 transition hover:bg-red-500/10">
+    <LogOut size={18} />
+    Logout
+  </button>
+
+</div>
+     
     </aside>
   );
 }
