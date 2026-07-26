@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import PWARegister from "@/components/PWARegister";
+import PWAInstall from "@/components/PWAInstall";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,12 +15,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://pascal-ai.vercel.app"),
+
   title: "Pascal AI",
   description:
     "Your AI assistant for coding, research, and everyday tasks — built for Ghana.",
+
+  manifest: "/manifest.json",
+
+  applicationName: "Pascal AI",
+
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Pascal AI",
+  },
+
   icons: {
     icon: "/favicon.ico",
+    apple: "/icon-192.png",
+    shortcut: "/favicon.ico",
   },
+
   openGraph: {
     title: "Pascal AI",
     description:
@@ -33,6 +51,7 @@ export const metadata: Metadata = {
       },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
     title: "Pascal AI",
@@ -42,17 +61,26 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0f172a",
+};
+
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-screen bg-slate-950 text-white antialiased">
+        <PWARegister />
+        <PWAInstall />
+        {children}
+      </body>
     </html>
   );
 }
