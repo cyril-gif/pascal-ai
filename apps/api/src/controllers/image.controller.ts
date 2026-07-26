@@ -42,9 +42,7 @@ class ImageController {
    */
   async getAll(req: Request, res: Response) {
     try {
-      const images = await imageService.getImages(
-        (req as any).user.id
-      );
+      const images = await imageService.getImages((req as any).user.id);
 
       return res.json({
         success: true,
@@ -63,10 +61,11 @@ class ImageController {
    */
   async delete(req: Request, res: Response) {
     try {
-      await imageService.deleteImage(
-        req.params.id,
-        (req as any).user.id
-      );
+      const imageId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+
+      await imageService.deleteImage(imageId, (req as any).user.id);
 
       return res.json({
         success: true,
