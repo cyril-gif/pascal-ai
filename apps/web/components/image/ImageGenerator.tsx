@@ -94,7 +94,7 @@ export default function ImageGenerator() {
         </h1>
 
         <p className="mt-2 text-slate-400">
-          Generate beautiful AI images using OpenAI.
+          Generate beautiful AI images using PascalAI.
         </p>
       </div>
 
